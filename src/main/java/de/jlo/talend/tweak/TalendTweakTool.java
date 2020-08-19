@@ -265,12 +265,18 @@ public class TalendTweakTool extends JFrame {
 		return model;
 	}
 	
-	private void loadUserProperties() {
+	private void setupUserPropertiesFilePath() {
 		File configDir = new File(System.getProperty("user.home") + "/" + RELATIVE_CONFIG_FILE_DIR);
 		if (configDir.exists() == false) {
 			configDir.mkdir();
 		}
 		userPropertiesFile = configDir.getAbsolutePath() + "/user.properties";
+	}
+	
+	public void loadUserProperties() {
+		if (userPropertiesFile == null) {
+			setupUserPropertiesFilePath();
+		}
 		loadUserProperties(userPropertiesFile);
 	}
 	
@@ -299,6 +305,7 @@ public class TalendTweakTool extends JFrame {
 			try {
 				Reader in = new InputStreamReader(new FileInputStream(cf), "UTF-8");
 				try {
+					userProperties.clear();
 					userProperties.load(in);
 				} finally {
 					in.close();

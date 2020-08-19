@@ -310,6 +310,7 @@ public class PanelDeployDIJob extends JPanel {
 			throw new IllegalStateException("No Nexus version choosen");
 		}
 		deployer.setNexusUrl(tfNexusURL.getText());
+		deployer.setNexusRepository(tfNexusRepo.getText());
 		TalendTweakTool.setProperty(TalendTweakTool.PARAM_NEXUS_VERSION, deployer.getNexusVersion());
 		TalendTweakTool.setProperty(TalendTweakTool.PARAM_NEXUS_URL, deployer.getNexusUrl());
 		TalendTweakTool.setProperty(TalendTweakTool.PARAM_NEXUS_REPO_BATCH, deployer.getNexusRepository());

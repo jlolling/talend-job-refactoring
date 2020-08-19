@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 
@@ -99,13 +100,18 @@ public class TaskSearchJobByComponentAttribute {
 		}
 		List<SearchResult> result = new ArrayList<>();
 		for (Talendjob job : jobs) {
-			job.setItemDoc(model.readItem(job));
-			List<SearchResult> sr = findValue(job, componentName, attribute, valuePattern, valueReplacement);
-			result.addAll(sr);
-			LOG.debug(job.getJobName() + ": found " + sr.size() + " components");
-			if (replaceAttributeValue && sr.size() > 0) {
-				LOG.info(job.getJobName() + ": write changes");
-				writeFixedJobs(job);
+			try {
+				Document item = model.readItem(job);
+				job.setItemDoc(item);
+				List<SearchResult> sr = findValue(job, componentName, attribute, valuePattern, valueReplacement);
+				result.addAll(sr);
+				LOG.debug(job.getJobName() + ": found " + sr.size() + " components");
+				if (replaceAttributeValue && sr.size() > 0) {
+					LOG.info(job.getJobName() + ": write changes");
+					writeFixedJobs(job);
+				}
+			} catch (Exception e) {
+				LOG.error("Fail to search in job: " + job + " reason: " + e.getMessage(), e);
 			}
 		}
 		currentSearchResult = result;

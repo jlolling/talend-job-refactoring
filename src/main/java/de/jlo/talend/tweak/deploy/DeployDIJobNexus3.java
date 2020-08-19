@@ -26,6 +26,14 @@ public class DeployDIJobNexus3 extends BatchjobDeployer {
 		return nexusRepository;
 	}
 
+	@Override
+	public void setNexusRepository(String repo) {
+		if (repo == null || repo.trim().isEmpty()) {
+			throw new IllegalArgumentException("Repo cannot be null or empty");
+		}
+		this.nexusRepository = repo;
+	}
+
 	private String buildDIJobPom() {
 		StringBuilder pom = new StringBuilder();
 		pom.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n");

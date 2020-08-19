@@ -22,7 +22,12 @@ public abstract class BatchjobDeployer {
 	
 	public abstract String getNexusRepository();
 
+	public abstract void setNexusRepository(String repo);
+
 	public void setJobFile(String jobJarFilePath) {
+		if (jobJarFilePath == null || jobJarFilePath.trim().isEmpty()) {
+			throw new IllegalArgumentException("jobJarFilePath cannot be null or empty");
+		}
 		this.jobFile = new File(jobJarFilePath);
 		String fileName = jobFile.getName();
 		int posDot = fileName.lastIndexOf(".");
@@ -57,6 +62,9 @@ public abstract class BatchjobDeployer {
 	}
 
 	public void setGroupId(String groupId) {
+		if (groupId == null || groupId.trim().isEmpty()) {
+			throw new IllegalArgumentException("groupId cannot be null or empty");
+		}
 		this.groupId = groupId;
 	}
 
