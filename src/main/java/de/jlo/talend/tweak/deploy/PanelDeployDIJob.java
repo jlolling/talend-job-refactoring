@@ -269,7 +269,6 @@ public class PanelDeployDIJob extends JPanel {
 		{
 			checkboxDeleteLocal = new JCheckBox("Delete local ZIP file when successufully deployed");
 			checkboxDeleteLocal.setSelected("true".equals(TalendTweakTool.getProperty(TalendTweakTool.PARAM_DELETE_LOCAL, "true")));
-			checkboxDeleteLocal.setEnabled(false);
 			GridBagConstraints gbc = new GridBagConstraints();
 			gbc.gridy = y;
 			gbc.gridx = 2;
