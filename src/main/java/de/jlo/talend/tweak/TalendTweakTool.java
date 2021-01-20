@@ -96,6 +96,7 @@ public class TalendTweakTool extends JFrame {
 		tabbedPane.add("Fix tRunJob", getPanelTaskFixTRunJob());
 		tabbedPane.add("Encrypt Password in context properties", new PanelEncryptPassword());
 		JSplitPane splitpane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabbedPane, LogPanel.getInstance());
+		splitpane.setDividerLocation(400);
 		getContentPane().setLayout(new BorderLayout());
 		getContentPane().add(splitpane);
 		setVisible(true);
