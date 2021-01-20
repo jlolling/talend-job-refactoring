@@ -61,6 +61,7 @@ public class HttpClient {
 				break;
 			}
             CloseableHttpResponse httpResponse = null;
+            request.setHeader("User-Agent", "Apache-Maven/3.2.1");
             try {
             	if (context != null) {
                 	httpResponse = closableHttpClient.execute(request, context);
