@@ -90,7 +90,15 @@ public abstract class BatchjobDeployer {
 	}
 
 	public void setNexusUrl(String nexusUrl) {
-		this.nexusUrl = nexusUrl;
+		if (nexusUrl == null || nexusUrl.trim().isEmpty()) {
+			throw new IllegalArgumentException("Nexus URL cannot be null or empty!");
+		}
+		if (nexusUrl.endsWith("/")) {
+			// cut last /
+			this.nexusUrl = nexusUrl.substring(0, nexusUrl.length() - 1);
+		} else {
+			this.nexusUrl = nexusUrl;
+		}
 	}
 
 	public String getNexusUser() {
