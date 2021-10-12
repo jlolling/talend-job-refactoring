@@ -55,14 +55,16 @@ public class TalendModel {
 	}
 
 	private void registerJob(Talendjob job) throws Exception {
-		listAllJobs.add(job);
-		List<Talendjob> list = mapNameJobs.get(job.getJobName());
-		if (list == null) {
-			list = new ArrayList<Talendjob>();
-			mapNameJobs.put(job.getJobName(), list);
-		}
-		if (list.contains(job) == false) {
-			list.add(job);
+		if (job != null) {
+			listAllJobs.add(job);
+			List<Talendjob> list = mapNameJobs.get(job.getJobName());
+			if (list == null) {
+				list = new ArrayList<Talendjob>();
+				mapNameJobs.put(job.getJobName(), list);
+			}
+			if (list.contains(job) == false) {
+				list.add(job);
+			}
 		}
 	}
 	
@@ -187,7 +189,9 @@ public class TalendModel {
             } else if (f.getName().endsWith(".properties")) {
             	try {
 					Talendjob job = readTalendJobFromProperties(f);
-					registerJob(job);
+					if (job != null) {
+						registerJob(job);
+					}
 				} catch (Exception e) {
 					LOG.error("Failed to read properties file: " + f.getAbsolutePath(), e);
 					throw new Exception("Failed to read properties file: " + f.getAbsolutePath(), e);
@@ -241,19 +245,23 @@ public class TalendModel {
     
     public Talendjob readTalendJobFromProperties(File propertiesFile) throws Exception {
     	Document propDoc = readFile(propertiesFile);
-    	Talendjob job = new Talendjob();
-    	Element propertyNode = (Element) propDoc.selectSingleNode("/xmi:XMI/TalendProperties:Property");
-    	QName nameId = new QName("id", null);
-    	job.setId(propertyNode.attributeValue(nameId));
-    	job.setJobName(propertyNode.attributeValue("label"));
-    	job.setPath(propertiesFile.getAbsolutePath());
-    	job.setVersion(propertyNode.attributeValue("version"));
-    	String folder = propertiesFile.getParentFile().getAbsolutePath().replace(processFolderPath, "");
-    	job.setJobFolder(folder);
-    	if (LOG.isDebugEnabled()) {
-        	LOG.debug("Read Talend job properties from file: " + propertiesFile.getAbsolutePath() + ". Id=" + job.getId());
+    	if (propDoc != null) {
+        	Talendjob job = new Talendjob();
+        	Element propertyNode = (Element) propDoc.selectSingleNode("/xmi:XMI/TalendProperties:Property");
+        	QName nameId = new QName("id", null);
+        	job.setId(propertyNode.attributeValue(nameId));
+        	job.setJobName(propertyNode.attributeValue("label"));
+        	job.setPath(propertiesFile.getAbsolutePath());
+        	job.setVersion(propertyNode.attributeValue("version"));
+        	String folder = propertiesFile.getParentFile().getAbsolutePath().replace(processFolderPath, "");
+        	job.setJobFolder(folder);
+        	if (LOG.isDebugEnabled()) {
+            	LOG.debug("Read Talend job properties from file: " + propertiesFile.getAbsolutePath() + ". Id=" + job.getId());
+        	}
+        	return job;
+    	} else {
+    		return null;
     	}
-    	return job;
     }
 
     private static Document readFile(File f) throws Exception {
@@ -266,7 +274,12 @@ public class TalendModel {
     			sb.append('\n');
     		}
     		reader.close();
-        	return DocumentHelper.parseText(sb.toString());
+    		String fileContent = sb.toString();
+    		if (fileContent.contains("<<<<<<") || fileContent.contains("======") || fileContent.contains(">>>>>>")) {
+    			LOG.error("File: " + f.getAbsolutePath() + " contains merge conflicts! File will be skipped.");
+    			return null;
+    		}
+        	return DocumentHelper.parseText(fileContent);
     	} catch (Exception e) {
     		throw new Exception("Read file: " + f.getAbsolutePath() + " failed: " + e.getMessage(), e);
     	}
