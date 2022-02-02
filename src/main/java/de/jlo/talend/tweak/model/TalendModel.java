@@ -45,7 +45,7 @@ public class TalendModel {
     	projectRootDir = rootDir;
 		File processFolder = new File(rootDir, "process");
 		processFolderPath = processFolder.getAbsolutePath();
-		readJobPropertiesFiles(processFolder);
+		registerJobs(processFolder);
     	LOG.info("Finished read " + listAllJobs.size() + " jobs from project root: " + rootDir);
     	LOG.info("Read database connections...");
     	File metadataConnectionFolder = new File(rootDir, "metadata/connections"); 
@@ -177,15 +177,15 @@ public class TalendModel {
     	return allNodes;
     }
 
-    private void readJobPropertiesFiles(File processFolder) throws Exception {
-        File[] list = processFolder.listFiles();
+    private void registerJobs(File folder) throws Exception {
+        File[] list = folder.listFiles();
         if (list == null) {
         	return;
         }
         for (File f : list) {
             if (f.isDirectory()) {
-            	readJobPropertiesFiles(f);
-            	LOG.debug("Read jobs in: " + f.getAbsoluteFile());
+            	registerJobs(f);
+            	LOG.debug("Read properties in: " + f.getAbsoluteFile());
             } else if (f.getName().endsWith(".properties")) {
             	try {
 					Talendjob job = readTalendJobFromProperties(f);

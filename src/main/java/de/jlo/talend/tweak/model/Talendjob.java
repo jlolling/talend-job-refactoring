@@ -156,7 +156,7 @@ public class Talendjob implements Comparable<Talendjob> {
 		return context;
 	}
 	
-	public List<ComponentAttribute> getComponentAttributes(Element component) {
+	public static List<ComponentAttribute> getComponentAttributes(Element component) {
 		List<Element> params = component.elements();
 		List<ComponentAttribute> attributes = new ArrayList<>();
 		for (Element param : params) {
@@ -169,7 +169,7 @@ public class Talendjob implements Comparable<Talendjob> {
 		return attributes;
 	}
 	
-	public ComponentAttribute getComponentAttributeByName(Element component, String nameToSearchFor) {
+	public static ComponentAttribute getComponentAttributeByName(Element component, String nameToSearchFor) {
 		List<Element> params = component.elements();
 		for (Element param : params) {
 			String name = param.attributeValue("name");
