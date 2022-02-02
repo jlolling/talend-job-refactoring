@@ -101,7 +101,18 @@ public class TalendModel {
     	return getJobs(jobNamePattern, false);
     }
 
-    	
+    public Talendjob getJobById(String id) {
+    	if (id == null || id.trim().isEmpty()) {
+    		throw new IllegalArgumentException("id cannot be null or empty");
+    	}
+    	for (Talendjob job : listAllJobs) {
+    		if (id.equals(job.getId())) {
+    			return job;
+    		}
+    	}
+    	return null;
+    }
+    
     public List<Talendjob> getJobs(String jobNamePattern, boolean onlyLatestVersion) {
     	List<Talendjob> list = new ArrayList<Talendjob>();
     	Set<String> uniqueJobNames = new HashSet<>();
@@ -241,7 +252,7 @@ public class TalendModel {
     
     public Talendjob readTalendJobFromProperties(File propertiesFile) throws Exception {
     	Document propDoc = readFile(propertiesFile);
-    	Talendjob job = new Talendjob();
+    	Talendjob job = new Talendjob(this);
     	Element propertyNode = (Element) propDoc.selectSingleNode("/xmi:XMI/TalendProperties:Property");
     	QName nameId = new QName("id", null);
     	job.setId(propertyNode.attributeValue(nameId));
@@ -313,5 +324,27 @@ public class TalendModel {
 	public int getCountJobs() {
 		return listAllJobs.size();
 	}
-		
+
+	public static String getComponentId(Element comp) {
+		return getComponentAttribute(comp, "UNIQUE_NAME");
+	}
+
+	public static String getComponentAttribute(Element comp, String attributeName) {
+		if (comp == null) {
+			throw new IllegalArgumentException("comp cannot be null");
+		}
+		if (attributeName == null || attributeName.trim().isEmpty()) {
+			throw new IllegalArgumentException("attributeName cannot be null or empty");
+		}
+		List<Element> params = comp.elements();
+		for (Element param : params) {
+			String name = param.attributeValue("name");
+			String value = param.attributeValue("value");
+			if (attributeName.equalsIgnoreCase(name)) {
+				return value;
+			}
+		}
+		return null;
+	}
+
 }

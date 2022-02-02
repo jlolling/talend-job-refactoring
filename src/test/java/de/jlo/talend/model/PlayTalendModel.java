@@ -98,4 +98,16 @@ public class PlayTalendModel {
 		}
 	}
 
+	public static void playCollectEmbeddedJobs() {
+		TalendModel model = new TalendModel();
+		try {
+			model.readProject("/development/git/talend/TALEND");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 }
