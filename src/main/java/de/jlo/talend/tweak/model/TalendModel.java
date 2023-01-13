@@ -267,7 +267,15 @@ public class TalendModel {
     	return job;
     }
 
-    private static Document readFile(File f) throws Exception {
+    public static Document readFile(File f) throws Exception {
+    	try {
+        	return DocumentHelper.parseText(readFileText(f));
+    	} catch (Exception e) {
+    		throw new Exception("Read file: " + f.getAbsolutePath() + " failed: " + e.getMessage(), e);
+    	}
+    }
+    
+    public static String readFileText(File f) throws Exception {
     	try {
     		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
     		String line = null;
@@ -277,7 +285,7 @@ public class TalendModel {
     			sb.append('\n');
     		}
     		reader.close();
-        	return DocumentHelper.parseText(sb.toString());
+        	return sb.toString();
     	} catch (Exception e) {
     		throw new Exception("Read file: " + f.getAbsolutePath() + " failed: " + e.getMessage(), e);
     	}
