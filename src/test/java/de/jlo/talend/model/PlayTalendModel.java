@@ -19,7 +19,8 @@ public class PlayTalendModel {
 		BasicConfigurator.configure();
 		Logger LOG = Logger.getRootLogger();
 		LOG.setLevel(Level.INFO);
-		playCollectTablesInOneJob();
+		//playCollectTablesInOneJob();
+		playCollectEmbeddedJobs();
 	}
 
 	public static void playFixTrunJob() {
@@ -38,7 +39,7 @@ public class PlayTalendModel {
 	public static void playSearchCompAttr() {
 		TalendModel model = new TalendModel();
 		try {
-			model.readProject("/Data/projects/gvl/git/talend_631_project_beat17/BEAT17");
+			model.readProject("/Users/jan/development/tos-workspace/GVL_BEAT17");
 			TaskSearchJobByComponentAttribute rt = new TaskSearchJobByComponentAttribute(model);
 			rt.search("core", "tpostgresqloutput", "table", null, null);
 			System.out.println(rt.getSummary());
@@ -51,7 +52,7 @@ public class PlayTalendModel {
 	public static void playCollectTablesInAllJobs() {
 		TalendModel model = new TalendModel();
 		try {
-			model.readProject("/Data/projects/gvl/git/talend_631_project_beat17/BEAT17");
+			model.readProject("/Users/jan/development/tos-workspace/GVL_BEAT17");
 			TaskJobDatabaseTableCollector c = new TaskJobDatabaseTableCollector(model);
 			c.setPreferSQLParser(false);
 			c.search(null, false);
@@ -73,7 +74,7 @@ public class PlayTalendModel {
 		LOG.setLevel(Level.DEBUG);
 		TalendModel model = new TalendModel();
 		try {
-			model.readProject("/Data/projects/gvl/git/talend_631_project_core_api/CORE_API");
+			model.readProject("/Users/jan/development/tos-workspace/GVL_CORE_API");
 			TaskJobDatabaseTableCollector c = new TaskJobDatabaseTableCollector(model);
 			c.setPreferSQLParser(false);
 			Talendjob j = model.getJobByVersion("core_businessobjects_get", null);
@@ -98,4 +99,16 @@ public class PlayTalendModel {
 		}
 	}
 
+	public static void playCollectEmbeddedJobs() {
+		TalendModel model = new TalendModel();
+		try {
+			model.readProject("/Users/jan/development/tos-workspace/GVL_CORE_API");
+			Talendjob job = model.getLatestJob(null);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	
 }

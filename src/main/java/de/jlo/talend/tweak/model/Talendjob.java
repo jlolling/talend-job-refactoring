@@ -21,6 +21,23 @@ public class Talendjob implements Comparable<Talendjob> {
 	private String pathWithoutExtension = null;
 	private Document itemDoc = null;
 	private Map<String, String> context = null;
+	private List<TRunJob> embeddedJobs = new ArrayList<>();
+	private TalendModel model = null;
+	
+	public Talendjob(TalendModel model) {
+		if (model == null) {
+			throw new IllegalArgumentException("model cannot be null");
+		}
+		this.model = model;
+	}
+	
+	public TalendModel getModel() {
+		return model;
+	}
+	
+	public void addTRunjob(TRunJob tRunjob) {
+		embeddedJobs.add(tRunjob);
+	}
 	
 	public String getId() {
 		return id;
@@ -147,6 +164,23 @@ public class Talendjob implements Comparable<Talendjob> {
 			String value = ((Element) cn).attributeValue("value");
 			context.put(name, value);
 		}
+	}
+	
+	public void retrieveTRunJobs() throws Exception {
+		if (itemDoc == null) {
+			throw new IllegalStateException("Item document not set!");
+		}
+		embeddedJobs.clear();
+		Element root = itemDoc.getRootElement();
+		List<Node> tRunJobNodes = root.selectNodes("node[@componentName='tRunJob']");
+		for (Node cn : tRunJobNodes) {
+			TRunJob tRunJob = new TRunJob(cn, model);
+			embeddedJobs.add(tRunJob);
+		}
+	}
+	
+	public List<TRunJob> getEbeddedJobs() {
+		return embeddedJobs;
 	}
 	
 	public Map<String, String> getContext() throws Exception {

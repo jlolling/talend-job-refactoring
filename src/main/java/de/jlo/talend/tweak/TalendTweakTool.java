@@ -36,6 +36,7 @@ import de.jlo.talend.tweak.deploy.PanelDeployDIJob;
 import de.jlo.talend.tweak.deploy.PanelDeployServiceJob;
 import de.jlo.talend.tweak.log.LogPanel;
 import de.jlo.talend.tweak.model.TalendModel;
+import de.jlo.talend.tweak.model.conflict.PanelSolveConflicts;
 import de.jlo.talend.tweak.model.job.PanelTaskFixTRunJob;
 import de.jlo.talend.tweak.model.job.PanelTaskSearchByComponentAttributes;
 import de.jlo.talend.tweak.model.sql.PanelTaskJobDatabaseTableCollector;
@@ -54,6 +55,7 @@ public class TalendTweakTool extends JFrame {
 	private PanelTaskJobDatabaseTableCollector pnTaskJobDatabaseTableCollector = null;
 	private PanelDeployDIJob pnDeployDIJob = null;
 	private PanelDeployServiceJob pnDeployServiceJob = null;
+	private PanelSolveConflicts pnSolveConflicts = null;
 	private static final String RELATIVE_CONFIG_FILE_DIR = ".talend-tweak_tool";
 	private static String userPropertiesFile;
 	private static Properties userProperties = new Properties();
@@ -95,6 +97,7 @@ public class TalendTweakTool extends JFrame {
 		tabbedPane.add("Search Tables in jobs", getPanelTaskJobDatabaseTableCollector());
 		tabbedPane.add("Fix tRunJob", getPanelTaskFixTRunJob());
 		tabbedPane.add("Encrypt Password in context properties", new PanelEncryptPassword());
+		tabbedPane.add("Solve Git Conflicts", getPanelSolveConflicts());
 		JSplitPane splitpane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabbedPane, LogPanel.getInstance());
 		splitpane.setDividerLocation(400);
 		getContentPane().setLayout(new BorderLayout());
@@ -185,6 +188,11 @@ public class TalendTweakTool extends JFrame {
 	private JPanel getPanelDeployServiceJob() throws Exception {
 		pnDeployServiceJob = new PanelDeployServiceJob(this);
 		return pnDeployServiceJob;
+	}
+	
+	private JPanel getPanelSolveConflicts() {
+		pnSolveConflicts = new PanelSolveConflicts();
+		return pnSolveConflicts;
 	}
 
 	private JPanel getPanelTaskSearchByComponentAttributes() {

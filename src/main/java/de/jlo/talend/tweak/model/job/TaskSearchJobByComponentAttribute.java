@@ -124,7 +124,7 @@ public class TaskSearchJobByComponentAttribute {
 		if (list.isEmpty() == false) {
 			if (valuePattern == null && searchAttribute == null) {
 				for (Node cn : list) {
-					SearchResult r = new SearchResult(job, getComponentId((Element) cn));
+					SearchResult r = new SearchResult(job, TalendModel.getComponentId((Element) cn));
 					if (r != null) {
 						result.add(r);
 					}
@@ -144,26 +144,12 @@ public class TaskSearchJobByComponentAttribute {
 	private void writeFixedJobs(Talendjob job) throws Exception {
 		model.writeItemFile(job, model.getProjectRootDir());
 	}
-	
-	private String getComponentId(Element comp) {
-		List<Element> params = comp.elements();
-		String id = null;
-		for (Element param : params) {
-			String name = param.attributeValue("name");
-			String value = param.attributeValue("value");
-			if ("UNIQUE_NAME".equals(name)) {
-				id = value;
-				break;
-			}
-		}
-		return id;
-	}
-	
+		
 	public SearchResult findValue(Talendjob job, Element comp, String searchAttribute, Pattern valuePattern, String valueReplacement) throws Exception {
 		SearchResult result = null;
 		List<Element> params = comp.elements();
+		String componentId = TalendModel.getComponentId(comp);
 		for (Element param : params) {
-			String componentId = getComponentId(comp);
 			String componentAttribute = param.attributeValue("name");
 			if (componentAttribute != null) {
 				String value = param.attributeValue("value");
