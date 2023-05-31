@@ -239,9 +239,10 @@ public class TestParseSQL {
 			    + "modified_by_system, \" + \n"
 			    + "(context.showDisplayString?\" b17_core.get_display_string(businessobject_id)\":\"null \")\n"
 			    + "+ \" as display_string\n"
-			    + "from \" + context.B17_CORE_DB_Schema + \".businessobject \" + (String)globalMap.get(\"whereClause\")";
+			    + "from \" + context.B17_CORE_DB_Schema + \".\" + context.target_table + \" \" + (String)globalMap.get(\"whereClause\")";
 		ContextVarResolver r = new ContextVarResolver();
 		r.addContextVar("B17_CORE_DB_Schema", "b17_core");
+		r.addContextVar("target_table", "businessobject");
 		String sql = r.replaceContextVars(code);
 		SQLParser parser = new SQLParser();
 		parser.parseScript(sql);
@@ -255,6 +256,9 @@ public class TestParseSQL {
 			System.out.println(name);
 		}
 		assertEquals("Count tables wrong", 1, fromTableNames.size());
+		String expTableName = "b17_core.businessobject";
+		String actTableName = fromTableNames.get(0);
+		assertEquals("Table name wrong", expTableName, actTableName);
 	}
 
 	@Test
