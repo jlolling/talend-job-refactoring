@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.jlo.talend.tweak</groupId>
   <artifactId>jlo-talend-job-refactoring</artifactId>
-  <version>10.0</version>
+  <version>10.1</version>
   <build>
     <plugins>
       <plugin>
@@ -54,5 +54,7 @@
       </exclusions>
     </dependency>
   </dependencies>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>
-

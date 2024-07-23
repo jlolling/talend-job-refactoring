@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -15,6 +17,7 @@ public class TaskSolveConflicts {
 	private static Logger LOG = Logger.getLogger(TaskSolveConflicts.class);
 	private String entryPath = null;
 	private String gitSide = null;
+	private List<String> listChangedFiles = new ArrayList<>();
 
 	public void execute() throws Exception {
 		if (entryPath == null || entryPath.trim().isEmpty()) {
@@ -28,9 +31,20 @@ public class TaskSolveConflicts {
 			entryDir = entryDir.getParentFile();
 		}
 		processDir(entryDir);
+		LOG.info(listChangedFiles.size() + " files had conflicts");
+		if (listChangedFiles.size() > 0) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("List affected files:\n");
+			for (String filePath : listChangedFiles) {
+				sb.append(filePath);
+				sb.append("\n");
+			}
+			LOG.info(sb.toString());
+		}
 	}
 	
 	private void processDir(File entry) throws Exception {
+		LOG.info("Start checking conflicted files in folder: " + entry);
 		if (entry.isFile()) {
 			solveConflicts(entry, gitSide);
 		} else {
@@ -55,8 +69,8 @@ public class TaskSolveConflicts {
 		this.entryPath = entryPath;
 	}
 	
-	public static void solveConflicts(File f, String side) throws Exception {
-		LOG.info("Start check conflicts using: " + side + " in file: " + f.getAbsolutePath());
+	public void solveConflicts(File f, String side) throws Exception {
+		LOG.debug("Start check conflicts using: " + side + " in file: " + f.getAbsolutePath());
 		if (side == null || side.trim().isEmpty()) {
 			throw new IllegalArgumentException("The side cannot be null or empty");
 		}
@@ -104,6 +118,7 @@ public class TaskSolveConflicts {
 			// write file back
 			String content = sb.toString();
 			Files.write(java.nio.file.Paths.get(f.getAbsolutePath()), content.getBytes("UTF-8"), StandardOpenOption.TRUNCATE_EXISTING);
+			listChangedFiles.add(f.getAbsolutePath());
 		}
 	}
 
