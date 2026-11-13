@@ -10,12 +10,50 @@ import de.jlo.talend.tweak.model.sql.SQLCodeUtil;
 public class TestConvertTalend2SQL {
 	
 	@Test
+	public void testReplaceContextInOutput1() throws Exception {
+		ContextVarResolver r = new ContextVarResolver();
+		r.addContextVar("TABLE", "mytable");
+		String testSQL = "context.TABLE + \"_temp\"";
+		String expected = "mytable_temp\"";
+		String actual = r.replaceContextVars(testSQL);
+		assertEquals("Fail", expected, actual);
+	}
+
+	@Test
+	public void testReplaceContextInOutput1ToJava() throws Exception {
+		String test = "\"mytable_temp\"\"";
+		String expected = "mytable_temp";
+		String actual = SQLCodeUtil.convertJavaToSqlCode(test);
+		assertEquals("Fail", expected, actual);
+	}
+
+	@Test
+	public void testReplaceContextInOutput2() throws Exception {
+		ContextVarResolver r = new ContextVarResolver();
+		r.addContextVar("TABLE", "mytable");
+		String testSQL = "\"temp_\" + context.TABLE";
+		String expected = "\"temp_mytable";
+		String actual = r.replaceContextVars(testSQL);
+		assertEquals("Fail", expected, actual);
+	}
+
+	@Test
+	public void testReplaceContextInOutput3() throws Exception {
+		ContextVarResolver r = new ContextVarResolver();
+		r.addContextVar("TABLE", "mytable");
+		String testSQL = "\"temp_\" + context.TABLE + \"_xxx\"";
+		String expected = "\"temp_mytable_xxx\"";
+		String actual = r.replaceContextVars(testSQL);
+		assertEquals("Fail", expected, actual);
+	}
+
+	@Test
 	public void testReplaceContextEncapulated() throws Exception {
 		ContextVarResolver r = new ContextVarResolver();
 		r.addContextVar("DB1_Schema", "schema_1");
 		r.addContextVar("DB2_Schema", "schema_2");
-		String testSQL = "select * from \"\" + context.DB1_Schema + \"\".\"table1\",\n\" + context.DB2_Schema + \".table2";
-		String expected = "select * from \"schema_1\".\"table1\",\nschema_2.table2";
+		String testSQL = "select * from \" + context.DB1_Schema + \".table1,\n\" + context.DB2_Schema + \".table2";
+		String expected = "select * from schema_1.table1,\nschema_2.table2";
 		String actual = r.replaceContextVars(testSQL);
 		assertEquals("Fail", expected, actual);
 	}
@@ -59,6 +97,44 @@ public class TestConvertTalend2SQL {
 		assertEquals("Convert Java to SQL failed", expected, actual);
 	}
 	
+	@Test
+	public void testReplaceContextVarsInSelect() throws Exception {
+		String test = "\"SELECT \n"
+				+ "contract_ref, \n"
+				+ "product_no, \n"
+				+ "product_group_ref, \n"
+				+ "unit_factor, \n"
+				+ "unit, \n"
+				+ "currency, \n"
+				+ "price, \n"
+				+ "customer_nr, \n"
+				+ "meta_index_within_file\n"
+				+ "FROM \" + context.di_staging_otk_Database +  \".\" + context.table + \"_pricelist\n"
+				+ "WHERE \n"
+				+ "meta_excluded = false\n"
+				+ "AND meta_file_id = \" + context.current_file_id";
+		String expected = "\"SELECT \n"
+				+ "contract_ref, \n"
+				+ "product_no, \n"
+				+ "product_group_ref, \n"
+				+ "unit_factor, \n"
+				+ "unit, \n"
+				+ "currency, \n"
+				+ "price, \n"
+				+ "customer_nr, \n"
+				+ "meta_index_within_file\n"
+				+ "FROM staging_otk.otk_contract_pricelist\n"
+				+ "WHERE \n"
+				+ "meta_excluded = false\n"
+				+ "AND meta_file_id = 99";
+		ContextVarResolver r = new ContextVarResolver();
+		r.addContextVar("di_staging_otk_Database", "staging_otk");
+		r.addContextVar("current_file_id", "99");
+		r.addContextVar("table", "otk_contract");
+		String actual = r.replaceContextVars(test);
+		assertEquals("Convert context vars failed", expected, actual);
+	}
+
 	@Test
 	public void testReplaceGlobalMapVarsNotFound() throws Exception {
 		String expected = "with idtype_til1 as (\n"

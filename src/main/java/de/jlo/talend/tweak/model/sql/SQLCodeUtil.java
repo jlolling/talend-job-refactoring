@@ -76,7 +76,7 @@ public class SQLCodeUtil {
                             inString = false;
                         } else {
                             // den Zeilenumbruch nicht innerhalb eines Strings
-                            sb.append('\n');
+                            //sb.append('\n');
                         }
                     } else {
                         masked = false;

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class ContextVarResolver {
 	
 	private Properties contextVars = new Properties();
-	private String contextVarRegex = "\"[\\s]*\\+[\\s]*context\\.([a-z0-9\\_]{1,})[\\s]*[+]{0,1}[\\s]*[\"]{0,1}";
+	private String contextVarRegex = "[\"]{0,1}[\\s]*[+]{0,1}[\\s]*context\\.([a-z0-9\\_]{1,})[\\s]*[+]{0,1}[\\s]*[\"]{0,1}";
 	private Pattern contextVarPattern = null;
 	
 	public ContextVarResolver() {

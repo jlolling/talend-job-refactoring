@@ -39,11 +39,16 @@ public class PanelSolveConflicts extends JPanel {
 	private void setDir() {
 		System.setProperty("apple.awt.fileDialogForDirectories", "true");
 		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		String folder = TalendTweakTool.getProperty("solveConflicts.folder", System.getProperty("user.home"));
 		if (folder != null) {
-			fileChooser.setCurrentDirectory(new File(folder));
+			File ff = new File(folder);
+			File p = ff.getParentFile();
+			fileChooser.setCurrentDirectory(p);
+			fileChooser.setSelectedFile(ff);
+			fileChooser.ensureFileIsVisible(ff);
+			fileChooser.setDialogTitle("Open Folder To Check For Conflicts");
 		}
-		fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		int answer = fileChooser.showOpenDialog(this);
 		if (answer == JFileChooser.APPROVE_OPTION) {
 			File f = fileChooser.getSelectedFile();

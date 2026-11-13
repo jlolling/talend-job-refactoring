@@ -12,6 +12,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 
+import org.apache.log4j.Logger;
+
 /**
  * DOC chuang class global comment. Detailed comment
  */
@@ -23,6 +25,7 @@ public class PasswordEncryptUtil {
 	private static SecretKey key = null;
 	private static SecureRandom secureRandom = new SecureRandom();
 	private static String CHARSET = "UTF-8";
+	private static Logger LOG = Logger.getLogger(PasswordEncryptUtil.class);
 
 	private static SecretKey getSecretKey() throws Exception {
 		if (key == null) {
@@ -58,7 +61,7 @@ public class PasswordEncryptUtil {
 			byte[] clearByte = c.doFinal(dec);
 			return new String(clearByte, CHARSET);
 		} catch (Exception e) {
-			// do nothing
+			LOG.warn(e);
 		}
 		return input;
 	}
